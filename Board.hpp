@@ -16,11 +16,11 @@ using namespace std;
 #define KONANE_BOARD_HPP
 class Board{
 private:
-    vector<vector<char>> board2D;
-    int x_dimension;
-    int y_dimension;
 
 public:
+    vector<vector<char>> board2D; //accessible to others boardName.board2D[row][column]
+    int rows;
+    int columns;
     Board();
     Board(int xSize, int ySize);
     void printBoard();
@@ -31,19 +31,19 @@ public:
 Board::Board()
 {
     vector<vector<char>> arr = board2D;
-    x_dimension = 0;
-    y_dimension = 0;
+    rows = 0;
+    columns = 0;
 }
 Board::Board(int xSize, int ySize)
 {
-    x_dimension = xSize;
-    y_dimension = ySize;
+    columns = xSize;
+    rows = ySize;
 
-    vector<vector<char>> vec( x_dimension , vector<char> (y_dimension, '0'));
+    vector<vector<char>> vec( rows , vector<char> (columns, '0'));
 
-    for(int i = 0; i < x_dimension; i++)
+    for(int i = 0; i < rows; i++)
     {
-        for(int j = 0; j < y_dimension; j++)
+        for(int j = 0; j < columns; j++)
         {
             if(i%2 == 0)
             {
@@ -62,10 +62,19 @@ Board::Board(int xSize, int ySize)
 
 void Board::printBoard()
 {
-    cout << endl;
-    for(int i = 0; i < x_dimension; i++)
+
+    cout << "     ";
+    for(int x = 0; x<columns; x++)
     {
-        for(int j = 0; j < y_dimension; j++)
+        cout << x + 1 << " ";
+    }
+    cout << endl;
+    //formatting function
+
+    for(int i = 0; i < rows; i++)
+    {
+        cout << " " << i + 1 << "|  ";
+        for(int j = 0; j < columns; j++)
         {
             cout << board2D[i][j] << " ";
         }
@@ -76,7 +85,7 @@ void Board::printBoard()
 bool Board::removePiece(int x, int y)
 {
 
-    bool insideGrid = x_dimension >= x && y_dimension >= y &&  //is it inside the grid
+    bool insideGrid = columns >= x && rows >= y &&  //is it inside the grid
             0 < x && 0 < y; //is it bigger than zero
 
     if(insideGrid)
@@ -92,12 +101,12 @@ bool Board::removePiece(int x, int y)
 bool Board::firstRemove(int x, int y)
 {
     bool isEdge = (x == 1 && y == 1) || //checks to see if x or y are edge pieces
-            (x == x_dimension && y == y_dimension) ||
-            (x == 1 && y == y_dimension) ||
-            (y == 1 && x == x_dimension);
+            (x == columns && y == rows) ||
+            (x == 1 && y == columns) ||
+            (y == 1 && x == rows);
 
-    int xEven = x_dimension % 2;
-    int yEven = y_dimension % 2;
+    int xEven = columns % 2;
+    int yEven = rows % 2;
 
     if(isEdge)
     {
@@ -108,10 +117,10 @@ bool Board::firstRemove(int x, int y)
     {
         if(xEven == 0 && yEven == 0)
         {
-            if(x == x_dimension/2 && y == y_dimension/2 || //checks the inside of the middle square if it exists
-                    x == (x_dimension/2+1) && y == (y_dimension/2) ||
-                    x == x_dimension/2 && y == (y_dimension/2)+1 ||
-                    x == (x_dimension/2+1) && y == (y_dimension/2)+1)
+            if(x == columns/2 && y == rows/2 || //checks the inside of the middle square if it exists
+                    x == (columns/2+1) && y == (rows/2) ||
+                    x == columns/2 && y == (rows/2)+1 ||
+                    x == (columns/2+1) && y == (rows/2)+1)
             {
                 removePiece(x, y);
                 return true;
@@ -119,8 +128,8 @@ bool Board::firstRemove(int x, int y)
         }
         else if(xEven == 0)
         {
-            if(x == x_dimension/2 && y == (y_dimension/2) + 1 || //checks center x pieces when y is uneven
-                    x == (x_dimension/2) + 1 && y == (y_dimension/2) + 1)
+            if(x == columns/2 && y == (rows/2) + 1 || //checks center columns pieces when rows is uneven
+                    x == (columns/2) + 1 && y == (rows/2) + 1)
             {
                 removePiece(x, y);
                 return true;
@@ -128,8 +137,8 @@ bool Board::firstRemove(int x, int y)
         }
         else if(yEven == 0)
         {
-            if(x == (x_dimension/2) + 1  && y == (y_dimension/2)|| //checks center y pieces when x is uneven
-               x == (x_dimension/2) + 1 && y == (y_dimension/2) + 1)
+            if(x == (columns/2) + 1  && y == (rows/2)|| //checks center y pieces when x is uneven
+               x == (columns/2) + 1 && y == (rows/2) + 1)
             {
                 removePiece(x, y);
                 return true;
